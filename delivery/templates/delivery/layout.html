@@ -1,5 +1,7 @@
 {% load static %}
 
+{% load delivery_extras %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,59 +22,80 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Delivery!</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Our Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Your Cart</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Orders in progress</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Operator dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Delivary panel</a>
-                    </li>
-                </ul>
-                
-                {% if  user.is_authenticated%}
-                <div class="btn-group">
-                    <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                      Welcome {{user.username}}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="{% url 'logout' %}">logout</a></li>
+    <!-- THE HEADER SECTION -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Delivery!</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Our Products</a>
+                        </li>
+                        
+                        {% if request.user|has_group:"customer" %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Your Cart</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Orders in progress</a>
+                            </li>
+                        {% endif %}
+                        
+                        {% if request.user|has_group:"operator" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Operator dashboard</a>
+                        </li>
+                        {% endif %}
+
+                        {% if request.user|has_group:"deliveryman" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Delivary panel</a>
+                        </li>
+                        {% endif %}
                     </ul>
+                    
+                    {% if  user.is_authenticated%}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                          Welcome {{user.username}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="#">Edit profile</a></li>
+                          <li><a class="dropdown-item" href="#">Reset password</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="{% url 'logout' %}">logout</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <div class="btn-group">
+                        <a class="btn btn-danger" href="{% url 'register' %}">Register</a>
+                        <a class="btn btn-danger" href="{% url 'login' %}">Login</a>
+                    </div> 
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="btn-group">
-                    <a class="btn btn-danger" href="{% url 'register' %}">Register</a>
-                    <a class="btn btn-danger" href="{% url 'login' %}">Login</a>
-                </div> 
-                {% endif %}
             </div>
+        </nav>
+    </header>
+    
+    <!-- THE MAIN SECTION -->
+    <main class="mt-4">
+        <div class="container">
+            {% block body %}
+            {% endblock %}
         </div>
-    </nav>
+    </main>
 
-    {% block body %}
-    {% endblock %}
-
+    <!-- THE FOOTER SECTION -->
+    <footer class="bg-danger text-center text-light">
+        Final project for cs50w.
+    </footer>
 </body>
 
 </html>

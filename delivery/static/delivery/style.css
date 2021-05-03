@@ -1,0 +1,14 @@
+footer {
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+
+.card-title {
+    display: inline-block;
+}
+
+.card-body > p {
+    font-size: smaller;
+}

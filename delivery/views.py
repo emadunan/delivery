@@ -6,9 +6,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 
-# Create your views here.
+
+# PROJECT VIEWS.
 
 def index(request):
+    if (request.user.is_authenticated):
+        print(request.user.groups.all())
+    
     return render(request, "delivery/index.html")
 
 
