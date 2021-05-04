@@ -21,6 +21,7 @@
 </head>
 
 <body>
+    <div class="backdrop"></div>
 
     <!-- THE HEADER SECTION -->
     <header>
@@ -34,7 +35,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        
+
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Our Products</a>
                         </li>
@@ -54,9 +55,15 @@
                         </li>
                         {% endif %}
 
+                        {% if request.user|has_group:"dataentry" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dataentry' %}">Data Entry View</a>
+                        </li>
+                        {% endif %}
+
                         {% if request.user|has_group:"deliveryman" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Delivary panel</a>
+                            <a class="nav-link" href="#">Delivary View</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -94,7 +101,7 @@
 
     <!-- THE FOOTER SECTION -->
     <footer class="bg-danger text-center text-light">
-        Final project for cs50w.
+        Final project for cs50w - emadunan@gmail.com
     </footer>
 </body>
 

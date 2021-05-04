@@ -1,0 +1,174 @@
+{% extends 'delivery/layout.html' %}
+
+
+{% block body %}
+
+{% if message %}
+<div class="alert alert-info" role="alert">
+    {{message}}
+</div>
+{% endif %}
+
+<div id="register-items__section" class="p-4 border rounded">
+    <form action="{% url 'dataentry' %}" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" class="form-control" id="InputItemName" name="name" placeholder="Name">
+        </div>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" placeholder="Leave a comment here" id="InputItemDescription"
+                name="description" style="height: 100px"></textarea>
+            <label for="InputItemDescription">Description</label>
+        </div>
+
+        <div id="categories__container" class="mb-3 p-2 border">
+            <div id="categories-input__radios">
+                <div class="form-check me-2">
+                    <input class="form-check-input" type="radio" name="category" value="fruit and vegetables"
+                        id="InputItemCategory1">
+                    <label class="form-check-label" for="InputItemCategory1">
+                        Fruit and vegetables
+                    </label>
+                </div>
+                <div class="form-check me-2">
+                    <input class="form-check-input" type="radio" name="category" value="dairy products"
+                        id="InputItemCategory2">
+                    <label class="form-check-label" for="InputItemCategory2">
+                        Dairy products
+                    </label>
+                </div>
+                <div class="form-check me-2">
+                    <input class="form-check-input" type="radio" name="category" value="meat and fish"
+                        id="InputItemCategory3">
+                    <label class="form-check-label" for="InputItemCategory3">
+                        Meat and fish
+                    </label>
+                </div>
+                <div class="form-check me-2">
+                    <input class="form-check-input" type="radio" name="category" value="drinks" id="InputItemCategory4">
+                    <label class="form-check-label" for="InputItemCategory4">
+                        Drinks
+                    </label>
+                </div>
+                <div class="form-check me-2">
+                    <input class="form-check-input" type="radio" name="category" value="bakery" id="InputItemCategory5">
+                    <label class="form-check-label" for="InputItemCategory5">
+                        Bakery
+                    </label>
+                </div>
+            </div>
+            <small id="category-choose__hint" class="ms-4">You must choose one Category!</small>
+        </div>
+
+        <div class="mb-3">
+            <input type="number" class="form-control" id="InputItemPrice" name="price" placeholder="Price">
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="InputItemPhotoUrl" name="photoUrl" placeholder="Photo Url">
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="availability" value="available" class="form-check-input"
+                id="InputItemAvailability">
+            <label class="form-check-label" for="InputItemAvailability">Available</label>
+        </div>
+
+        <button type="submit" class="btn btn-success">Register New Item</button>
+    </form>
+</div>
+
+<div id="preview-items__section" class="mt-3">
+    <table class="table table-success table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Price</th>
+                <th scope="col" hidden>Availability</th>
+                <th scope="col" hidden>PhotoUrl</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{item.name}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.category}}</td>
+                <td>${{item.price}}</td>
+                <td hidden>{{item.availability}}</td>
+                <td hidden>{{item.photo_url}}</td>
+                <td><button class="btn btn-outline-dark btn-sm edit-item__btn">Edit</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="edit-item__modal" class="p-4 border rounded bg-light">
+    <form action="{% url 'dataentry' %}" method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" class="form-control" id="InputItemName__edit" name="name" placeholder="Name">
+        </div>
+        <div class="mb-3">
+            <textarea class="form-control" placeholder="Description" id="InputItemDescription__edit"
+                name="description" style="height: 100px"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <select class="form-select" id="InputItemCategory__edit" name="category">
+                <option value="fruit and vegetables">Fruit and vegetables</option>
+                <option value="dairy products">Dairy products</option>
+                <option value="meat and fish">Meat and fish</option>
+                <option value="drinks">Drinks</option>
+                <option value="bakery">Bakery</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <input type="number" class="form-control" id="InputItemPrice__edit" name="price" placeholder="Price">
+        </div>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="InputItemPhotoUrl__edit" name="photoUrl" placeholder="Photo Url">
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="availability" value="True" class="form-check-input"
+                id="InputItemAvailability__edit">
+            <label class="form-check-label" for="InputItemAvailability">Available</label>
+        </div>
+
+        <button type="button" id="submit-edit__btn" class="btn btn-outline-primary">Edit Item</button>
+        <button type="button" id="close-edit__btn" class="btn btn-outline-dark">Close</button>
+    </form>
+</div>
+
+
+
+
+<!-- Modal example "NOT USED" -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+    

@@ -6,14 +6,18 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 
+# SHARED LISTS.
+sections = ["Fruit and vegetables", "Dairy products", "Meat and fish", "Drinks", "Bakery"]
 
 # PROJECT VIEWS.
 
+
+# Authentication Section
 def index(request):
-    if (request.user.is_authenticated):
-        print(request.user.groups.all())
-    
-    return render(request, "delivery/index.html")
+    items = Item.objects.all().order_by('name')
+    return render(request, "delivery/index.html", {
+        "items": items
+    })
 
 
 def register(request):
@@ -69,3 +73,44 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
+
+
+# Application Functions
+def data_entry(request):
+    if request.method == "POST":
+
+        # Get item values
+        name = request.POST["name"]
+        description = request.POST["description"]
+        category = request.POST.get("category")
+        price = request.POST["price"]
+        photoUrl = request.POST["photoUrl"]
+        availability = request.POST.get("availability", "unavailable") == "available"
+
+        # Validate the inputs
+        if name == '' or description == '' or category == None or price == '' or photoUrl == '':
+            return render(request, "delivery/dataentry.html", {
+                "message": "Invalid Input value, fill all input fields and try again."
+            })
+
+        try:
+            item = Item.objects.create(
+                name=name,
+                description=description,
+                category=category,
+                price=price,
+                photo_url=photoUrl,
+                availability=availability)
+            item.save()
+        except IntegrityError:
+            return render(request, "delivery/dataentry.html", {
+                "message": "This item is already registered."
+            })
+
+        return HttpResponseRedirect(reverse("dataentry"))
+
+    else:
+        items = Item.objects.all().order_by('-created_at')
+        return render(request, "delivery/dataentry.html", {
+            "items": items
+        })

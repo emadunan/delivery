@@ -5,10 +5,88 @@ footer {
     bottom: 0;
 }
 
+main {
+    margin-bottom: 3rem;
+}
+
+#products-section__filter > form {
+    display: flex;
+}
+
+#products-section__view {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card {
+    overflow: hidden;
+    margin: 0.5rem;
+}
+
+.card img {
+    height: 12rem;
+}
+
 .card-title {
     display: inline-block;
 }
 
-.card-body > p {
+.card-text {
     font-size: smaller;
+    text-align: justify;
+    text-justify: inter-word;
+    margin-bottom: 0.2rem;
+    min-height: 7rem;
+}
+
+.card-body > strong {
+    font-size: smaller;
+}
+
+.card-img-top {
+    padding: 0.3rem;
+}
+
+.card-bage__custom {
+    position: relative;
+    transform: rotate(-35deg);
+    top: 0.8rem;
+    left: -4.5rem;
+}
+
+#categories-input__radios {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#category-choose__hint {
+    color: #6c757d;
+}
+
+
+
+/* Edit Modal CSS */
+#edit-item__modal {
+    position: fixed;
+    display: none;
+    z-index: 200;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.backdrop {
+    position: fixed;
+    display: none;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
 }

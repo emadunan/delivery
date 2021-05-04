@@ -2,6 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime
+from django.utils import timezone
 
 # Create your models here.
 
@@ -19,9 +20,18 @@ class Item(models.Model):
     category = models.CharField(max_length=50)
     price = models.FloatField()
     photo_url = models.TextField()
+    availability = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.name} ({self.price})"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(name='unique_name', fields=['name'])
+        ]
+
+    
 
 
 class Order(models.Model):
