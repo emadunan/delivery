@@ -81,6 +81,7 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
+                <th scope="col" hidden>Id</th>
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
                 <th scope="col">Category</th>
@@ -94,6 +95,7 @@
             {% for item in items %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
+                <td hidden>{{item.id}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.description}}</td>
                 <td>{{item.category}}</td>
@@ -110,6 +112,9 @@
 <div id="edit-item__modal" class="p-4 border rounded bg-light">
     <form action="{% url 'dataentry' %}" method="POST">
         {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" class="form-control" id="InputItemId__edit" name="itemId" placeholder="Id" hidden>
+        </div>
         <div class="mb-3">
             <input type="text" class="form-control" id="InputItemName__edit" name="name" placeholder="Name">
         </div>

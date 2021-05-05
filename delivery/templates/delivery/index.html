@@ -3,6 +3,7 @@
 {% block body %}
 <div id="products-section__filter" class="mb-4 p-3 border border-danger">
     <form action="" method="post">
+        {% csrf_token %}
         <input class="form-control me-1" list="categories" name="category" id="InputCategory" placeholder="Category">
         <datalist id="categories">
             <option value="Fruit and vegetables">
@@ -11,10 +12,10 @@
             <option value="Drinks">
             <option value="Bakery">
         </datalist>
-        <input type="number" class="form-control me-1" placeholder="Price: from">
-        <input type="number" class="form-control me-1" placeholder="Price: to">
-        <input type="text" class="form-control me-1" placeholder="Name">
-        <button class="btn btn-outline-danger">Filter</button>
+        <input type="number" name="price_from" class="form-control me-1" placeholder="Price: from">
+        <input type="number" name="price_to" class="form-control me-1" placeholder="Price: to">
+        <input type="text" name="name" class="form-control me-1" placeholder="Name">
+        <button type="submit" class="btn btn-outline-danger">Filter</button>
     </form>
     
 </div>
@@ -26,9 +27,9 @@
         <span class="badge bg-warning text-dark card-bage__custom">${{item.price}}</span>
         <img src="{{item.photo_url}}" class="card-img-top" alt="{{item.name}}">
         <div class="card-body">
-            <h5 class="card-title">{{item.name|truncatechars:20}} </h5>
+            <h5 class="card-title">{{item.name|title}} </h5>
             <p class="card-text">{{item.description|truncatechars:155}}</p>
-            <strong>Category: {{item.category}}</strong>
+            <strong>{{item.category|title}}</strong>
             <hr class="mt-1 mb-2">
             <div class="input-group input-group-sm mb-1">
                 <span class="input-group-text" id="inputGroup-amount">Amount</span>

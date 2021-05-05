@@ -42,6 +42,7 @@ main {
 
 .card-body > strong {
     font-size: smaller;
+    color: #0000ff;
 }
 
 .card-img-top {

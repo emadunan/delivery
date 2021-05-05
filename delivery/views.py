@@ -1,10 +1,14 @@
+import json
+
 from django.shortcuts import render
 
 from .models import User, Item, Order
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+
+from django.views.decorators.csrf import csrf_exempt
 
 # SHARED LISTS.
 sections = ["Fruit and vegetables", "Dairy products", "Meat and fish", "Drinks", "Bakery"]
@@ -14,10 +18,31 @@ sections = ["Fruit and vegetables", "Dairy products", "Meat and fish", "Drinks",
 
 # Authentication Section
 def index(request):
-    items = Item.objects.all().order_by('name')
-    return render(request, "delivery/index.html", {
+    if request.method == "POST":
+
+        filtered_items = Item.objects.filter(availability=True)
+        if request.POST["category"]:
+            category = request.POST["category"].lower()
+            filtered_items = Item.objects.filter(category=category)
+        if request.POST["name"]:
+            name = request.POST["name"].lower()
+            filtered_items = filtered_items.filter(name__contains=name)
+        if request.POST["price_from"]:
+            price_from = request.POST["price_from"]
+            filtered_items = filtered_items.filter(price__gte=price_from)
+        if request.POST["price_to"]:
+            price_to = request.POST["price_to"]
+            filtered_items = filtered_items.filter(price__lte=price_to)
+        
+        return render(request, "delivery/index.html", {
+        "items": filtered_items.order_by('name')
+        })
+        
+    else:
+        items = Item.objects.filter(availability=True).order_by('name')
+        return render(request, "delivery/index.html", {
         "items": items
-    })
+        })
 
 
 def register(request):
@@ -95,8 +120,8 @@ def data_entry(request):
 
         try:
             item = Item.objects.create(
-                name=name,
-                description=description,
+                name=name.lower(),
+                description=description.lower(),
                 category=category,
                 price=price,
                 photo_url=photoUrl,
@@ -114,3 +139,35 @@ def data_entry(request):
         return render(request, "delivery/dataentry.html", {
             "items": items
         })
+
+
+# API Functions
+
+@csrf_exempt
+def edit_item(request):
+
+    data = json.loads(request.body)
+    if data.get("id") is not None:
+        try:
+            item = Item.objects.get(pk=int(data["id"]))
+        except Item.DoesNotExist:
+            return JsonResponse({"error": "Item not found"}, status=404)
+
+    # Receiving data from request body
+    
+    if data.get("name") is not None:
+        item.name = data["name"]
+    if data.get("description") is not None:
+        item.description = data["description"]
+    if data.get("category") is not None:
+        item.category = data["category"]
+    if data.get("price") is not None:
+        item.price = data["price"]
+    if data.get("photoUrl") is not None:
+        item.photo_url = data["photoUrl"]
+    if data.get("availability") is not None:
+        item.availability = data["availability"] == "True"
+        print(item.availability)
+    
+    item.save()
+    return HttpResponse(status=204)
