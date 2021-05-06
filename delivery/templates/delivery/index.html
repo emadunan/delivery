@@ -1,48 +1,110 @@
 {% extends 'delivery/layout.html' %}
 
 {% block body %}
-<div id="products-section__filter" class="mb-4 p-3 border border-danger">
-    <form action="" method="post">
-        {% csrf_token %}
-        <input class="form-control me-1" list="categories" name="category" id="InputCategory" placeholder="Category">
-        <datalist id="categories">
-            <option value="Fruit and vegetables">
-            <option value="Dairy products">
-            <option value="Meat and fish">
-            <option value="Drinks">
-            <option value="Bakery">
-        </datalist>
-        <input type="number" name="price_from" class="form-control me-1" placeholder="Price: from">
-        <input type="number" name="price_to" class="form-control me-1" placeholder="Price: to">
-        <input type="text" name="name" class="form-control me-1" placeholder="Name">
-        <button type="submit" class="btn btn-outline-danger">Filter</button>
-    </form>
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+            type="button" role="tab" aria-controls="pills-home" aria-selected="true">Available Products</button>
+    </li>
     
-</div>
+    {% if not user.is_authenticated %}
+    <li style="margin-left: auto;">
+        <div class="alert alert-success" role="alert" >
+            <strong><em>Register NOW and enjoy having our Products, with free delivery service!</em></strong>
+          </div>
+    </li>
+    {% endif %}
 
-<div id="products-section__view">
-    
-    {% for item in items %}
-    <div class="card" style="width: 13rem;">
-        <span class="badge bg-warning text-dark card-bage__custom">${{item.price}}</span>
-        <img src="{{item.photo_url}}" class="card-img-top" alt="{{item.name}}">
-        <div class="card-body">
-            <h5 class="card-title">{{item.name|title}} </h5>
-            <p class="card-text">{{item.description|truncatechars:155}}</p>
-            <strong>{{item.category|title}}</strong>
-            <hr class="mt-1 mb-2">
-            <div class="input-group input-group-sm mb-1">
-                <span class="input-group-text" id="inputGroup-amount">Amount</span>
-                <input type="number" class="form-control">
+    {% if user.is_authenticated %}
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+            type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Your Cart</button>
+    </li>
+    {% endif %}
+</ul>
+<div class="tab-content" id="pills-tabContent">
+    <!-- TAB-1 -->
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div id="products-section__filter" class="mb-4 p-3 border border-danger">
+            <form action="" method="post">
+                {% csrf_token %}
+                <input class="form-control me-1" list="categories" name="category" id="InputCategory"
+                    placeholder="Category">
+                <datalist id="categories">
+                    <option value="Fruit and vegetables">
+                    <option value="Dairy products">
+                    <option value="Meat and fish">
+                    <option value="Drinks">
+                    <option value="Bakery">
+                </datalist>
+                <input type="number" name="price_from" class="form-control me-1" placeholder="Price: from">
+                <input type="number" name="price_to" class="form-control me-1" placeholder="Price: to">
+                <input type="text" name="name" class="form-control me-1" placeholder="Name">
+                <button type="submit" class="btn btn-outline-danger">Filter</button>
+            </form>
+
+        </div>
+
+        <div id="products-section__view">
+
+            {% for item in items %}
+            <div class="card" style="width: 13rem;">
+                <span class="badge bg-warning text-dark card-bage__custom">${{item.price}}</span>
+                <img src="{{item.photo_url}}" class="card-img-top" alt="{{item.name}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{item.name|title}} </h5>
+                    <p class="card-text">{{item.description|truncatechars:155}}</p>
+                    <strong>{{item.category|title}}</strong>
+                    
+                    {% if user.is_authenticated %}
+                    <hr class="mt-1 mb-2">
+                    <div class="input-group input-group-sm mb-1">
+                        <span class="input-group-text" id="inputGroup-amount">Quantity</span>
+                        <input type="number" class="form-control">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success btn-sm add-cart__btn">Add to your Cart</button>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="d-grid gap-2">
-                <button class="btn btn-success btn-sm">Add to your chart</button>
-            </div>
+            {% endfor %}
+
         </div>
     </div>
-    {% endfor %}
-    
+    <!-- TAB-2 -->
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <div id="customer-cart__section" class="">
+            <div id="customer-cart__header" class="bg-light border border-dark rounded py-2 ps-2">
+                <h3 id="customer-cart__title text-dark">Your Cart</h3>
+                <button id="reset-cart__btn" class="btn btn-outline-dark">Reset Cart</button>
+                <button id="submit-cart__btn" class="btn btn-outline-dark mx-2">Make Order!</button>
+            </div>
+
+            <table class="table table-light" id="customer-cart__table">
+                <thead>
+                    <tr>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                    <td>Apple</td>
+                    <td>3</td>
+                    <td>$1</td>
+                    <td class="total-price">$3</td>
+                  </tr> -->
+                </tbody>
+                <tr>
+                    <th colspan="3">Total Cost</th>
+                    <td id="total-cost__value"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
-    

@@ -36,18 +36,18 @@ class Item(models.Model):
 
 class Order(models.Model):
     user_client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="client_orders")
-    user_delivery = models.ForeignKey(User, on_delete=models.CASCADE, related_name="delivery_orders")
+    user_delivery = models.ForeignKey(User, on_delete=models.CASCADE, related_name="delivery_orders", blank=True, null=True)
     items = models.ManyToManyField(Item, through="OrderItem", related_name="orders")
     received_at = models.DateTimeField()
-    submitted_at = models.DateTimeField()
-    delivered_at = models.DateTimeField()
+    submitted_at = models.DateTimeField(blank=True, null=True)
+    delivered_at = models.DateTimeField(blank=True, null=True)
     state = models.TextField(max_length=10)
 
     def __str__(self):
-        return f"{self.user.username}, made order number '{self.id}' at ({self.received_at})"
+        return f"{self.user_client.username}, made order number '{self.id}' at ({self.received_at})"
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderItems")
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     amount = models.IntegerField()

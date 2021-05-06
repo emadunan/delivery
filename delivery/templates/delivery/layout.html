@@ -35,23 +35,23 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+                        
+                        {% if not user.is_authenticated or request.user|has_group:"customer" %}
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Our Products</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Products</a>
                         </li>
+                        {% endif %}
+                            
                         
                         {% if request.user|has_group:"customer" %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Your Cart</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Orders in progress</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'orders' %}">Orders</a>
+                        </li>
                         {% endif %}
                         
                         {% if request.user|has_group:"operator" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Operator dashboard</a>
+                            <a class="nav-link" href="{% url 'operator' %}">Operator dashboard</a>
                         </li>
                         {% endif %}
 
@@ -63,7 +63,7 @@
 
                         {% if request.user|has_group:"deliveryman" %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Delivary View</a>
+                            <a class="nav-link" href="{% url 'deliveryman' %}">Delivary View</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -74,8 +74,8 @@
                           Welcome {{user.username}}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                          <li><a class="dropdown-item" href="#">Edit profile</a></li>
-                          <li><a class="dropdown-item" href="#">Reset password</a></li>
+                          <li><a class="dropdown-item" href="{% url 'editprofile' %}">Edit profile</a></li>
+                          <li><a class="dropdown-item" href="{% url 'resetpwd' %}">Reset password</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="{% url 'logout' %}">logout</a></li>
                         </ul>

@@ -91,3 +91,36 @@ main {
     height: 100vh;
     background: rgba(0,0,0,0.5);
 }
+
+/* CART SECTION */
+#customer-cart__header {
+    display: flex;
+}
+
+#reset-cart__btn {
+    margin-left: auto;
+}
+
+/* ORDERS */
+.order-item {
+    display: inline-block;
+}
+
+.order-item > small {
+    font-size: 1rem;
+    display: block;
+}
+
+.order-status__span {
+    border-radius: 0.3rem;
+    padding: 0.2rem;
+    font-weight: 700;
+    font-style: italic;
+}
+
+
+/* DASHBOARD */
+.deliver-man__selector {
+    width: 10rem;
+    display: inline-block;
+}

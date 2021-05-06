@@ -1,0 +1,29 @@
+{% extends 'delivery/layout.html' %}
+
+
+{% block body %}
+
+{% if message %}
+<div class="alert alert-info" role="alert">
+    {{message}}
+</div>
+{% endif %}
+
+<form action="{% url 'editprofile' %}" method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="InputUsername" class="form-label">Username</label>
+        <input type="text" class="form-control" id="InputUsername" name="username" value="{{user.username}}">
+    </div>
+    <div class="mb-3">
+        <label for="InputAddress" class="form-label">Address</label>
+        <input type="text" class="form-control" id="InputAddress" name="address" value="{{user.address}}">
+    </div>
+    <div class="mb-3">
+        <label for="InputPhone" class="form-label">Phone</label>
+        <input type="text" class="form-control" id="InputPhone" name="phone" value="{{user.phone}}">
+    </div>
+    <button type="submit" class="btn btn-danger">Update Profile</button>
+</form>
+
+{% endblock %}

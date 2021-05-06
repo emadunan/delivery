@@ -1,0 +1,52 @@
+{% extends 'delivery/layout.html' %}
+
+
+{% block body %}
+
+
+{% if not orders %}
+<h3>There is no active orders yet!</h3>
+{% endif %}
+    
+
+{% for order in orders %}
+<div class="card mb-4 border-dark order_instance">
+    <div class="card-header bg-light text-dark">
+        <strong>Order #{{order.id}}</strong>
+        <span class="order-status__span bg-warning">{{order.state}}</span>
+        <span style="float: right;">{{order.received_at}}</span>
+    </div>
+    <div class="card-body">
+        {% for item in order.orderItems.all %}
+        <div class="order-item bg-light text-dark border border-dark py-1 px-3 m-1 rounded">
+            <h5><u>{{item.item.name}}</u></h5>
+            <small>Quantity: {{item.amount}}</small>
+            <small>Item price: {{item.item.price}}</small>
+        </div>
+        {% endfor %}
+        <h6 class="ms-4 mt-3"><em><b>Total Cost: $44</b></em></h6>
+    </div>
+</div>
+{% endfor %}
+    <script>
+
+        // Calculating the total cost for each order
+        document.querySelectorAll(".order_instance").forEach(element => {
+            const orderItems = element.querySelectorAll(".order-item");
+            let totalCost = 0;
+            orderItems.forEach(element => {
+                const ch = element.children;
+                q = parseFloat(ch[1].innerText.substring(10));
+                p = parseFloat(ch[2].innerText.substring(12));
+                total = q * p;
+                console.log(total);
+
+                totalCost += total;
+            });
+
+            const totalcostEl = element.querySelector("h6").innerHTML = ("Total Cost: $" + totalCost).bold();
+        });
+
+    </script>
+{% endblock %}
+    

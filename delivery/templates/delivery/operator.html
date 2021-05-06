@@ -1,0 +1,188 @@
+{% extends 'delivery/layout.html' %}
+
+
+{% block body %}
+
+<!-- DASHBOARD TABS -->
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+            type="button" role="tab" aria-controls="pills-home" aria-selected="true">Preparing</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+            type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Submitted</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
+            type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Delivered</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button"
+            role="tab" aria-controls="pills-contact" aria-selected="false">All</button>
+    </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <!-- TAB -1 CONTENT -->
+        {% if not preparing %}
+        <h3>There are no orders in preparation now!</h3>
+        {% endif %}
+
+        {% for order in preparing %}
+        <div class="card mb-4 border-dark order_instance">
+            <div class="card-header bg-light text-dark">
+
+                <strong>Order #{{order.id}}</strong>
+                <span class="order-status__span bg-warning">{{order.state}}</span>
+                <span style="float: right;">{{order.received_at}}</span>
+
+                <hr class="my-2">
+                <form action="{% url 'assign_deliveryman' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="orderId" hidden value="{{order.id}}">
+                    <select name="deliveryman" id="" class="form-select deliver-man__selector">
+                        <option disabled>Choose...</option>
+                        <option value="deliveryman-1">deliveryman-1</option>
+                        <option value="deliveryman-2">deliveryman-2</option>
+                        <option value="deliveryman-3">deliveryman-3</option>
+                    </select>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+
+            </div>
+            <div class="card-body">
+                <h6><strong>Customer: </strong> {{order.user_client.username}} ({{order.user_client.phone}})</h6>
+                <p><strong>Address: </strong>{{order.user_client.address}}</p>
+                {% for item in order.orderItems.all %}
+                <div class="order-item bg-light text-dark border border-dark py-1 px-3 m-1 rounded">
+                    <h5><u>{{item.item.name}}</u></h5>
+                    <small>Quantity: {{item.amount}}</small>
+                    <small>Item price: {{item.item.price}}</small>
+                </div>
+                {% endfor %}
+                <h6 class="ms-4 mt-3 total-cost__text"></h6>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <!-- TAB -2 CONTENT -->
+        {% if not submitted %}
+        <h3>There are no orders ready for submitting now!</h3>
+        {% endif %}
+        {% for order in submitted %}
+        <div class="card mb-4 border-dark order_instance">
+            <div class="card-header bg-light text-dark">
+
+                <strong>Order #{{order.id}}</strong>
+                <span class="order-status__span bg-warning">{{order.state}}</span>
+                <span>by "{{order.user_delivery.username}}"</span>
+                <span style="float: right;">{{order.received_at}}</span>
+
+                {% if order.state == "preparing" %}
+                <hr class="my-2">
+                <form action="{% url 'assign_deliveryman' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="orderId" hidden value="{{order.id}}">
+                    <select name="deliveryman" id="" class="form-select deliver-man__selector">
+                        <option disabled>Choose...</option>
+                        <option value="deliveryman-1">deliveryman-1</option>
+                        <option value="deliveryman-2">deliveryman-2</option>
+                        <option value="deliveryman-3">deliveryman-3</option>
+                    </select>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+                {% endif %}
+
+            </div>
+            <div class="card-body">
+                <h6><strong>Customer: </strong> {{order.user_client.username}} ({{order.user_client.phone}})</h6>
+                <p><strong>Address: </strong>{{order.user_client.address}}</p>
+                {% for item in order.orderItems.all %}
+                <div class="order-item bg-light text-dark border border-dark py-1 px-3 m-1 rounded">
+                    <h5><u>{{item.item.name}}</u></h5>
+                    <small>Quantity: {{item.amount}}</small>
+                    <small>Item price: {{item.item.price}}</small>
+                </div>
+                {% endfor %}
+                <h6 class="ms-4 mt-3 total-cost__text"></h6>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <!-- TAB -3 CONTENT -->
+        {% for order in delivered %}
+        <div class="card mb-4 border-dark order_instance">
+            <div class="card-header bg-light text-dark">
+                <strong>Order #{{order.id}}</strong>
+                <span class="order-status__span bg-warning">{{order.state}}</span>
+                <span style="float: right;">{{order.received_at}}</span>
+            </div>
+            <div class="card-body">
+                <h6><strong>Customer: </strong> {{order.user_client.username}} ({{order.user_client.phone}})</h6>
+                <p><strong>Address: </strong>{{order.user_client.address}}</p>
+                {% for item in order.orderItems.all %}
+                <div class="order-item bg-light text-dark border border-dark py-1 px-3 m-1 rounded">
+                    <h5><u>{{item.item.name}}</u></h5>
+                    <small>Quantity: {{item.amount}}</small>
+                    <small>Item price: {{item.item.price}}</small>
+                </div>
+                {% endfor %}
+                <h6 class="ms-4 mt-3 total-cost__text"></h6>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="tab-pane fade" id="pills-all" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <!-- TAB -4 CONTENT -->
+        {% for order in orders %}
+        <div class="card mb-4 border-dark order_instance">
+            <div class="card-header bg-light text-dark">
+
+                <strong>Order #{{order.id}}</strong>
+                <span class="order-status__span bg-warning">{{order.state}}</span>
+                <span style="float: right;">{{order.received_at}}</span>
+
+            </div>
+            <div class="card-body">
+                <h6><strong>Customer: </strong> {{order.user_client.username}} ({{order.user_client.phone}})</h6>
+                <p><strong>Address: </strong>{{order.user_client.address}}</p>
+                {% for item in order.orderItems.all %}
+                <div class="order-item bg-light text-dark border border-dark py-1 px-3 m-1 rounded">
+                    <h5><u>{{item.item.name}}</u></h5>
+                    <small>Quantity: {{item.amount}}</small>
+                    <small>Item price: {{item.item.price}}</small>
+                </div>
+                {% endfor %}
+                <h6 class="ms-4 mt-3 total-cost__text"></h6>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+<script>
+    // Calculating the total cost for each order
+    document.querySelectorAll(".order_instance").forEach(element => {
+        const orderItems = element.querySelectorAll(".order-item");
+        let totalCost = 0;
+        orderItems.forEach(element => {
+            const ch = element.children;
+            q = parseFloat(ch[1].innerText.substring(10));
+            p = parseFloat(ch[2].innerText.substring(12));
+            total = q * p;
+            console.log(total);
+
+            totalCost += total;
+        });
+
+        const totalcostEl = element.querySelector(".total-cost__text").innerHTML = ("Total Cost: $" + totalCost).bold();
+    });
+
+</script>
+{% endblock %}
