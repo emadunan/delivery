@@ -33,7 +33,7 @@
         <form action="{% url 'finish_order' %}" method="POST">
             {% csrf_token %}
             <input type="text" name="orderId" hidden value="{{order.id}}">
-            <button type="submit" class="btn btn-danger">Finish Order!</button>
+            <button type="submit" class="btn btn-danger">Order Delivered!</button>
         </form>
         {% endif %}
 
