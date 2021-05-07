@@ -8,6 +8,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import check_password, make_password
@@ -121,6 +122,7 @@ def logout_user(request):
 
 
 # Application Functions
+@login_required
 def data_entry(request):
     if request.method == "POST":
 
@@ -161,6 +163,7 @@ def data_entry(request):
         })
 
 
+@login_required
 def show_orders(request):
     orders = Order.objects.filter(user_client=request.user).exclude(state="delivered")
     return render(request, "delivery/orders.html", {
@@ -168,6 +171,7 @@ def show_orders(request):
     })
 
 
+@login_required
 def show_all_orders(request):
     orders = Order.objects.all().order_by("-id")
     preparing = Order.objects.filter(state="preparing")
@@ -181,6 +185,7 @@ def show_all_orders(request):
     })
 
 
+@login_required
 def show_delivery_orders(request):
     user = request.user
     orders = Order.objects.filter(user_delivery=user).filter(state="submitted")
@@ -189,6 +194,7 @@ def show_delivery_orders(request):
     })
 
 
+@login_required
 def assign_deliveryman(request):
     # Receiving the order data from the post request
     order_id = request.POST["orderId"]
@@ -205,6 +211,7 @@ def assign_deliveryman(request):
     return HttpResponseRedirect(reverse("operator"))
 
 
+@login_required
 def finish_order(request):
     # Receiving the order data from the post request
     order_id = request.POST.get("orderId")
@@ -218,6 +225,7 @@ def finish_order(request):
     return HttpResponseRedirect(reverse("deliveryman"))
 
 # EDIT AND RESET PROFILE SECTION
+@login_required
 def edit_profile(request):
     # Get the user
     user = request.user
@@ -244,7 +252,7 @@ def edit_profile(request):
             "user": user
         })
         
-
+@login_required
 def reset_pwd(request):
     user = request.user
     if request.method == "POST":
@@ -274,7 +282,7 @@ def reset_pwd(request):
         return render(request, "delivery/reset_password.html")
 
 # API Functions
-
+@login_required
 @csrf_exempt
 def edit_item(request):
 
@@ -303,7 +311,7 @@ def edit_item(request):
     
     item.save()
     return HttpResponse(status=204)
-
+@login_required
 @csrf_exempt
 def make_order(request):
     data = json.loads(request.body)
@@ -320,5 +328,4 @@ def make_order(request):
         orderItem = OrderItem(order=order, item=item, amount=obj["amount"])
         orderItem.save()
 
-    print(data)
     return HttpResponse(status=201)
