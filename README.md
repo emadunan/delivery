@@ -53,7 +53,7 @@ The database file which include 14 tables:
 12. auth_group_permissions
 13. auth_permission
 14. sqlite_sequence
-the first 4 was created based on the models I added in the models.py file.
+###### The first 4 was created based on the models I added in the models.py file.
 
 ### .gitignore
 I added this file to untrack unnecessary tracks from being pushed to the project repository in github.com
