@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from datetime import datetime
 from django.utils import timezone
 
-# Create your models here.
+# Models.
 
 class User(AbstractUser):
     phone = models.CharField(max_length=15)
