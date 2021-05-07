@@ -145,40 +145,27 @@ create a new order.
 In case you needed, here is the Usernames / Passwords to Access the Application from different users with different permissions according to their groups. moreover you can create new accounts as much as you like from the registeration form for account with client permission, or from the admin site for the rest group acounts.
 
 #### As Client
-* username: emad
-* Password: emad
-
-* username: rami
-* Password: rami
-
-* username: sarah
-* Password: sara
-
-* username: nancy
-* Password: emad
+* Username: emad, Password: emad
+* Username: rami, Password: rami
+* Username: sarah, Password: sara
+* Username: nancy, Password: emad
 
 #### As Operator
-* username: operator
-* Password: emad
+* Username: operator, Password: emad
 
 #### As Data Entry
-* username: dataentry
-* Password: emad
+* Username: dataentry, Password: emad
 
 #### As Delivery Man
-* username: deliveryman-1
-* Password: emad
-
-* username: deliveryman-2
-* Password: emad
-
-* username: deliveryman-3
-* Password: emad
+* Username: deliveryman-1, Password: emad
+* Username: deliveryman-2, Password: emad
+* Username: deliveryman-3, Password: emad
 
 #### Software Versions:
 * Python (3.9.2)
 * Django (3.1.7)
 * bootstrap (5.0.0-beta3)
+
 ***To run the application, just change directory to the main project folder called "capstone", then run the command "python manage.py runserver".***
 
 #### Contact Informantion
